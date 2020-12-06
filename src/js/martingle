@@ -1,0 +1,62 @@
+//======================== crash Martingale ====================
+var config = {
+    baseBet: { label: 'base bet', value: currency.minAmount, type: 'number' },
+    payout: { label: 'payout', value: 2, type: 'number' },
+    stop: { label: 'stop if bet >', value: 1e8, type: 'number' },
+    onLoseTitle: { label: 'On Lose', type: 'title' },
+    onLoss: {
+        label: '', value: 'reset', type: 'radio',
+        options: [
+            { value: 'reset', label: 'Return to base bet' },
+            { value: 'increase', label: 'Increase bet by (loss multiplier)' }
+        ]
+    },
+    lossMultiplier: { label: 'loss multiplier', value: 2, type: 'number' },
+    onWinTitle: { label: 'On Win', type: 'title' },
+    onWin: {
+        label: '', value: 'reset', type: 'radio',
+        options: [
+            { value: 'reset', label: 'Return to base bet' },
+            { value: 'increase', label: 'Increase bet by (win multiplier)' }
+        ]
+    },
+    winMultiplier: { label: 'win multiplier', value: 2, type: 'number' },
+}
+
+function main () {
+    var currentBet = config.baseBet.value;
+    engine.on('GAME_STARTING', function () {
+        engine.bet(currentBet, config.payout.value);
+    })
+
+    engine.on('GAME_ENDED', function () {
+        var history = engine.getHistory()
+        var lastGame = history[0]
+        // If we wagered, it means we played
+        if (!lastGame.wager) {
+            return;
+        }
+
+        // we won..
+        if (lastGame.cashedAt) {
+            if (config.onWin.value === 'reset') {
+                currentBet = config.baseBet.value;
+            } else {
+                currentBet *= config.winMultiplier.value;
+            }
+            log.success('We won, so next bet will be ' + currentBet + ' ' + currency.currencyName);
+        } else {
+            if (config.onLoss.value === 'reset') {
+                currentBet = config.baseBet.value;
+            } else {
+                currentBet *= config.lossMultiplier.value;
+            }
+            log.error('We lost, so next bet will be ' + currentBet + ' ' + currency.currencyName);
+        }
+
+        if (currentBet > config.stop.value) {
+            log.error('Was about to bet' + currentBet + 'which triggers the stop');
+            engine.stop();
+        }
+    })
+}

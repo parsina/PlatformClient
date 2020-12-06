@@ -1,0 +1,35 @@
+<div class="d-flex">
+    <div class="header-btn-lg pr-0">
+        <div class="widget-content p-0">
+            <div class="widget-content-wrapper">
+                <div class="widget-content-left">
+                    <button routerLink="" routerLinkActive="active-item" [routerLinkActiveOptions]="{exact: true}" class="mb-2 mr-2 btn btn-link">Home</button>
+                    <button routerLinkActive="active-item" routerLink="/demo" class="mb-2 mr-2 btn btn-link">Demo</button>
+                    <button routerLinkActive="active-item" routerLink="/elements/timeline" class="mb-2 mr-2 btn btn-link">Resources</button>
+                    <button routerLinkActive="active-item" routerLink="/elements/buttons-standard" class="mb-2 mr-2 btn btn-link">About</button>
+                    <button routerLinkActive="active-item" routerLink="/login"  class="mb-2 mr-2 btn btn-link">Login</button>
+                </div>
+                <div class="widget-content-right">
+                    <div class="btn-group" ngbDropdown placement="bottom-left">
+                        <button type="button" class="btn btn-link p-0 mr-2" ngbDropdownToggle>
+                                      <span>
+                                        <div class="icon-wrapper icon-wrapper-alt rounded-circle">
+                                          <img width="42" src="./assets/images/avatars/1.jpg" alt=""
+                                               class="rounded-circle">
+                                        </div>
+                                      </span>
+                        </button>
+
+                        <div ngbDropdownMenu>
+                            <button class="dropdown-item">Account</button>
+                            <button class="dropdown-item">Settings</button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item">Log out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,228 @@
+<app-page-title [heading]="heading" [subheading]="subheading" [icon]="icon"></app-page-title>
+<div class="text-center">
+    <!--    <div class="btn-group-sm btn-group btn-group-toggle" ngbRadioGroup
+    name="radioBasic" [(ngModel)]="model">-->
+    <div class="row btn-group-sm btn-group-toggle" ngbRadioGroup [(ngModel)]="timeFrame">
+        <label ngbButtonLabel class="mb-2 mr-2 btn-transition btn btn-outline-primary" style="width: 100px;" default>
+            <input ngbButton type="radio" [value]="30" (click)="changeTimeFrame(0)"> 30 sec
+        </label>
+        <label ngbButtonLabel class="mb-2 mr-2 btn-transition btn btn-outline-primary" style="width: 100px;">
+            <input ngbButton type="radio" [value]="60" (click)="changeTimeFrame(1)"> 1 min
+        </label>
+        <label ngbButtonLabel class="mb-2 mr-2 btn-transition btn btn-outline-primary" style="width: 100px;">
+            <input ngbButton type="radio" [value]="120" (click)="changeTimeFrame(2)"> 2 min
+        </label>
+        <label ngbButtonLabel class="mb-2 mr-2 btn-transition btn btn-outline-primary" style="width: 100px;">
+            <input ngbButton type="radio" [value]="180" (click)="changeTimeFrame(3)"> 3 min
+        </label>
+        <label ngbButtonLabel class="mb-2 mr-2 btn-transition btn btn-outline-primary" style="width: 100px;">
+            <input ngbButton type="radio" [value]="300" (click)="changeTimeFrame(5)"> 5 min
+        </label>
+        <label ngbButtonLabel class="mb-2 mr-2 btn-transition btn btn-outline-primary" style="width: 100px;">
+            <input ngbButton type="radio" [value]="600" (click)="changeTimeFrame(10)"> 10 min
+        </label>
+        <label ngbButtonLabel class="mb-2 mr-2 btn-transition btn btn-outline-primary" style="width: 100px;">
+            <input ngbButton type="radio" [value]="900" (click)="changeTimeFrame(15)"> 15 min
+        </label>
+        <div class="d-inline-block" ngbDropdown style="margin-left: 2em;">
+            <select ngbDropdownToggle class="mb-2 mr-2 btn btn-dark" (change)="changeSymbol($event.target.value)">
+                <option *ngFor="let symbol of symbols" value={{symbol}}>
+                    {{symbol}}
+                </option>
+            </select>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div id="demoChart" style="width: 70%; height: 400px"></div>
+        <div class="card" style="width: 29%; height: 400px; border-color: black; margin-left: 3px;">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" style="background-color: lightgray;">
+                    <div class="row" style="width: 100%; margin: auto;">
+                        <div class="widget-numbers " style="width: 50%; float: left;">
+                            <label class="text-primary"
+                                   style="font-weight: bold;font-size: 0.8rem;display: block;line-height: 1;">Account
+                                Balance</label>
+                            <label class="text-primary"
+                                   style="font-weight: bold;font-size: 0.8rem;display: block;line-height: 1;">Reward
+                                Balance</label>
+                        </div>
+                        <div class="widget-numbers" style="width: 50%; float: left;">
+                            <label class="text-warning"
+                                   style="font-weight: bold;font-size: 0.8rem;display: block;line-height: 1;">${{accountBalance}}</label>
+                            <label class="text-warning"
+                                   style="font-weight: bold;font-size: 0.8rem;display: block;line-height: 1;">${{rewardBalance}}</label>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item"
+                    style="background-color: lightgray; border-top-color:dimgray; border-top-width: 1px; border-style: solid;">
+                    <div class="row" style="width: 100%; margin: auto;">
+                        <div class="widget-numbers" style="float: left;">
+                            <label class="text-primary"
+                                   style="font-weight: bold;font-size: 0.8rem;display: block;line-height: 1;">ask</label>
+                            <label class="text-warning"
+                                   style="min-width:100px; font-weight: bold;font-size: 0.8rem;display: block;line-height: 1;">{{ask}}</label>
+                        </div>
+                        <div class="widget-numbers" style="margin: auto;">
+                            <label class="text-primary"
+                                   style="font-weight: bold;font-size: 0.8rem;display: block;line-height: 1;">{{symbol}}</label>
+                            <label class="text-warning"
+                                   style="min-width:100px; font-weight: bold;font-size: 0.8rem;display: block;line-height: 1;">{{priceLine.value}}</label>
+                        </div>
+                        <div class="widget-numbers" style="float: right;">
+                            <label class="text-primary"
+                                   style="font-weight: bold;font-size: 0.8rem;display: block;line-height: 1;">bid</label>
+                            <label class="text-warning"
+                                   style="min-width:100px; font-weight: bold;font-size: 0.8rem;display: block;line-height: 1;">{{bid}}</label>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item"
+                    style="width: 100%; margin: auto; border-top-color:dimgray; border-top-width: 1px; border-style: solid;">
+                    <div class="input-group">
+                        <div class="input-group-prepend"><span class="input-group-text"
+                                                               style="font-weight: bold;">$</span></div>
+                        <input type="text" (keyup)="updateReturn()" [(ngModel)]="amountStr" maxlength="5"
+                               placeholder="Min: 5   Max: 1000"
+                               class="widget-heading form-control" style="font-weight: bold; color: #2a5298"
+                               inputCurrency>
+                    </div>
+                    <div>
+                        <button class="mb-2 mr-2 btn-hover-shine btn btn-focus btn-sm" style="margin-top: 3px; width: 20%;" (click)="updateAmount(50)">$50</button>
+                        <button class="mb-2 mr-2 btn-hover-shine btn btn-focus btn-sm" style="margin-top: 3px; width: 20%;" (click)="updateAmount(100)">$100</button>
+                        <button class="mb-2 mr-2 btn-hover-shine btn btn-focus btn-sm" style="margin-top: 3px; width: 20%;" (click)="updateAmount(500)">$500</button>
+                        <button class="mb-2 mr-2 btn-hover-shine btn btn-focus btn-sm" style="margin-top: 3px; width: 20%;" (click)="updateAmount(1000)">$1000</button>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="widget-subheading">
+                        <div class="custom-checkbox">
+                            <span>
+                                <input id="spreadMode" type="checkbox" (click)="spreadMode($event.target.checked)"
+                                       class="custom-control-input">
+                                <label for="spreadMode" class="custom-control-label"
+                                       style="font-weight: bold;margin-right: 50px;">Spread mode</label>
+                            </span>
+                            <span>
+                                <input id="showAskBid" type="checkbox" (click)="showAskBidLevels($event.target.checked)"
+                                       class="custom-control-input" style="margin-left: 50px;">
+                                <label for="showAskBid" class="custom-control-label" style="font-weight: bold;">Show ask/bid levels</label>
+                            </span>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="list-group-item">
+                    <div class="widget-content p-0">
+                        <div class="widget-content-wrapper">
+                            <div class="widget-content-left">
+                                <label style="font-weight: bold; font-size: 1rem;color: #2a5298;">
+                                    <span style="color: black">Payout: </span> {{payout}}%
+                                </label>
+                            </div>
+                            <div class="widget-content-right">
+                                <label style="font-weight: bold; font-size: 1rem;color: #2a5298;">
+                                    <span style="color: black">Return: </span> ${{return}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row" style="width: 100%; margin: auto;">
+                        <div style="width: 50%; float: left;">
+                            <button [disabled]="!allowTrade" (click)="sendOrder('CALL')" class="btn btn-success"
+                                    style="width: 80%;">Call
+                            </button>
+                        </div>
+                        <div style="width: 50%; float: right;">
+                            <button [disabled]="!allowTrade" (click)="sendOrder('PUT')" class="btn btn-danger"
+                                    style="width: 80%;">Put
+                            </button>
+                        </div>
+                    </div>
+                </li>
+                <!--                <li class="list-group-item">-->
+                <!--                    <div class="widget-content p-0">-->
+                <!--                        <div class="widget-content-wrapper">-->
+                <!--                            <div class="widget-content-left mr-3">-->
+                <!--                                <img width="42" class="rounded-circle" src="./assets/images/avatars/5.jpg" alt="">-->
+                <!--                            </div>-->
+                <!--                            <div class="widget-content-left">-->
+                <!--                                <div class="widget-heading">Eliot Huber</div>-->
+                <!--                            </div>-->
+                <!--                            <div class="widget-content-right">-->
+                <!--                                <div class="ml-auto badge badge-pill badge-warning">43</div>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </li>-->
+                <!--                <li class="list-group-item">-->
+                <!--                    <div class="widget-content p-0">-->
+                <!--                        <div class="widget-content-wrapper">-->
+                <!--                            <div class="widget-content-left mr-3">-->
+                <!--                                <div class="widget-content-left">-->
+                <!--                                    <img width="42" class="rounded" src="./assets/images/avatars/9.jpg" alt="">-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                            <div class="widget-content-left flex2">-->
+                <!--                                <div class="widget-heading">Product Sales</div>-->
+                <!--                                <div class="widget-subheading opacity-10">-->
+                <!--                        <span class="pr-2">-->
+                <!--                            <b>43</b> Sales</span>-->
+                <!--                                    <span>-->
+                <!--                            <b class="text-success">$156,24</b> Totals-->
+                <!--                        </span>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                            <div class="widget-content-right text-right mr-3">-->
+                <!--                                <div><b>52,5%</b></div>-->
+                <!--                                YoY Growth-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </li>-->
+                <!--                <li class="list-group-item">-->
+                <!--                    <div class="widget-content p-0">-->
+                <!--                        <div class="widget-content-wrapper">-->
+                <!--                            <div class="widget-content-left">-->
+                <!--                                <div class="widget-heading">Product Sales</div>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </li>-->
+                <!--                <li class="list-group-item">-->
+                <!--                    <div class="widget-content p-0">-->
+                <!--                        <div class="widget-content-wrapper">-->
+                <!--                            <div class="widget-content-left mr-3">-->
+                <!--                                <div class="icon-wrapper border-light rounded m-0">-->
+                <!--                                    <div class="icon-wrapper-bg bg-light"></div>-->
+                <!--                                    <i class="lnr-cog icon-gradient bg-happy-itmeo"></i></div>-->
+                <!--                            </div>-->
+                <!--                            <div class="widget-content-left">-->
+                <!--                                <div class="widget-heading">Hidden Actions Pane</div>-->
+                <!--                            </div>-->
+                <!--                            <div class="widget-content-right widget-content-actions">-->
+                <!--                                <button class="btn-pill btn btn-outline-primary">Follow</button>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </li>-->
+                <!--                <li class="list-group-item">-->
+                <!--                    <div class="widget-content p-0">-->
+                <!--                        <div class="widget-content-wrapper">-->
+                <!--                            <div class="widget-content-left center-elem mr-2"><i class="pe-7s-file text-muted fsize-2"></i></div>-->
+                <!--                            <div class="widget-content-left">-->
+                <!--                                <div class="widget-heading">Example file 1</div>-->
+                <!--                            </div>-->
+                <!--                            <div class="widget-content-right">-->
+                <!--                                <button class="btn-icon btn-icon-only btn btn-link"><i class="pe-7s-download fsize-2 btn-icon-wrapper"> </i></button>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </li>-->
+            </ul>
+        </div>
+    </div>
+</div>

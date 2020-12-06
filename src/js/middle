@@ -1,0 +1,50 @@
+var baseBet = currency.minAmount;
+var basePayout = 2;
+var maxCount = 5;
+
+var maxLostCount = 0;
+var lastMaxLostCount = 10;
+
+var config = {}
+
+function main() {
+    var bet = baseBet;
+    var payout = basePayout;
+    var counter = 0;
+    engine.on('GAME_STARTING', function () {
+        log.info('Counter:  ' + counter);
+        if (counter >= maxCount)
+            engine.bet(bet, payout);
+    })
+
+    engine.on('GAME_ENDED', function () {
+        var history = engine.getHistory();
+        var lastGame = history[0];
+
+
+        if (lastGame.crash < 200)
+            counter++;
+        else
+            counter = 0;
+
+        if(counter > maxLostCount)
+            maxLostCount++;
+
+        if(maxLostCount > lastMaxLostCount)
+            log.error('Max Lost Counter:  ' + maxLostCount);
+
+        // If we wagered, it means we played
+        if (!lastGame.wager) {
+            return;
+        }
+
+        // we won..
+        if (lastGame.cashedAt) {
+            bet = baseBet;
+            log.success('We won, so next bet will be ' + bet + ' ' + currency.currencyName);
+        } else {
+            bet *= 2;
+            log.error('We lost, so next bet will be ' + bet + ' ' + currency.currencyName);
+        }
+    })
+}

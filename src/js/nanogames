@@ -1,0 +1,35 @@
+
+var config = {
+}
+
+function main () {
+    var bet = Math.round(currency.amount / 100);
+    var payout = 1.1;
+    engine.on('GAME_STARTING', function () {
+            engine.bet(bet, payout);
+    })
+
+    engine.on('GAME_ENDED', function () {
+        var history = engine.getHistory()
+        var lastGame = history[0]
+
+        // If we wagered, it means we played
+        if (!lastGame.wager) {
+            return;
+        }
+
+        // we won..
+        if (lastGame.cashedAt) {
+            bet = Math.round(currency.amount / 100)
+            log.success('We won, so next bet will be ' + currentBet + ' ' + currency.currencyName);
+        } else {
+            bet = bet * 10;
+            log.error('We lost, so next bet will be ' + currentBet + ' ' + currency.currencyName);
+        }
+
+        if (currentBet > config.stop.value) {
+            log.error('Was about to bet' + currentBet + 'which triggers the stop');
+            engine.stop();
+        }
+    })
+}
